@@ -32,7 +32,14 @@
   .version-info {
     text-align: center;
     color: #4ecca3;
-    font-size: 0.9em;
+    font-size: 0.85em;
+    margin-bottom: 4px;
+    font-family: 'Consolas', 'Monaco', monospace;
+  }
+  .offline-version-info {
+    text-align: center;
+    color: #ffd369;
+    font-size: 0.85em;
     margin-bottom: 16px;
     font-family: 'Consolas', 'Monaco', monospace;
   }
@@ -128,9 +135,9 @@
     background: linear-gradient(135deg, #e94560, #0f3460);
     color: #fff;
     text-decoration: none;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
-    font-size: 0.9em;
+    font-size: 0.95em;
     font-weight: 600;
     margin-top: 12px;
     transition: opacity 0.2s;
@@ -141,7 +148,7 @@
     font-size: 0.75em;
     font-weight: normal;
     opacity: 0.8;
-    margin-top: 2px;
+    margin-top: 3px;
   }
   .footer {
     text-align: center;
@@ -185,6 +192,8 @@
     color: #ffd369;
     margin-bottom: 2px;
   }
+  .link-type.offline { color: #4ecca3; }
+  .link-type.online { color: #888; }
 </style>
 </head>
 <body>
@@ -192,10 +201,12 @@
   <h1>Adobe Flash Player 离线安装包</h1>
   <p class="subtitle">国内特供版 · ActiveX / PPAPI / NPAPI 全版本下载</p>
   <p class="version-info" id="versionInfo">正在获取最新版本...</p>
+  <p class="offline-version-info" id="offlineVersionInfo">正在检测离线包版本...</p>
 
   <div class="note">
     <strong>说明：</strong>数据实时来自官方 API（api.flash.cn），版本号自动更新。
     "立即下载"按钮使用官方 CDN 直链，支持反防盗链使用 IDM 等下载工具直接下载完整离线安装包。
+    离线包由官方不定期上传，版本可能略滞后于在线安装器。
   </div>
 
   <div class="cards">
@@ -210,25 +221,25 @@
         <div class="field-value"><span>IE / 360兼容模式</span></div>
       </div>
       <div class="field">
-        <div class="field-label">版本号 / 日期 / 大小</div>
+        <div class="field-label">离线包版本 / 大小</div>
         <div class="field-value"><span id="meta-activex">-</span></div>
       </div>
       <div class="field">
-        <div class="link-type">官方 CDN 直链（可直接下载，支持IDM）</div>
+        <div class="link-type offline">完整离线安装包（推荐，支持IDM）</div>
         <div class="field-value">
-          <a href="#" target="_blank" id="link-activex">-</a>
-          <button class="copy-btn" onclick="copyText('link-activex', this)">复制</button>
+          <a href="#" target="_blank" id="link-offline-activex">-</a>
+          <button class="copy-btn" onclick="copyText('link-offline-activex', this)">复制</button>
         </div>
       </div>
       <div class="field">
-        <div class="link-type">离线包格式链接</div>
+        <div class="link-type online">在线安装器（最新版）</div>
         <div class="field-value">
-          <a href="#" target="_blank" id="link2-activex">-</a>
-          <button class="copy-btn" onclick="copyText('link2-activex', this)">复制</button>
+          <a href="#" target="_blank" id="link-online-activex">-</a>
+          <button class="copy-btn" onclick="copyText('link-online-activex', this)">复制</button>
         </div>
       </div>
       <a href="#" target="_blank" class="download-btn" id="dl-activex">
-        立即下载
+        立即下载（离线包）
         <span class="sub" id="dl-size-activex"></span>
       </a>
     </div>
@@ -244,25 +255,25 @@
         <div class="field-value"><span>Chromium 内核 / 360极速</span></div>
       </div>
       <div class="field">
-        <div class="field-label">版本号 / 日期 / 大小</div>
+        <div class="field-label">离线包版本 / 大小</div>
         <div class="field-value"><span id="meta-ppapi">-</span></div>
       </div>
       <div class="field">
-        <div class="link-type">官方 CDN 直链（可直接下载，支持IDM）</div>
+        <div class="link-type offline">完整离线安装包（推荐，支持IDM）</div>
         <div class="field-value">
-          <a href="#" target="_blank" id="link-ppapi">-</a>
-          <button class="copy-btn" onclick="copyText('link-ppapi', this)">复制</button>
+          <a href="#" target="_blank" id="link-offline-ppapi">-</a>
+          <button class="copy-btn" onclick="copyText('link-offline-ppapi', this)">复制</button>
         </div>
       </div>
       <div class="field">
-        <div class="link-type">离线包格式链接</div>
+        <div class="link-type online">在线安装器（最新版）</div>
         <div class="field-value">
-          <a href="#" target="_blank" id="link2-ppapi">-</a>
-          <button class="copy-btn" onclick="copyText('link2-ppapi', this)">复制</button>
+          <a href="#" target="_blank" id="link-online-ppapi">-</a>
+          <button class="copy-btn" onclick="copyText('link-online-ppapi', this)">复制</button>
         </div>
       </div>
       <a href="#" target="_blank" class="download-btn" id="dl-ppapi">
-        立即下载
+        立即下载（离线包）
         <span class="sub" id="dl-size-ppapi"></span>
       </a>
     </div>
@@ -278,25 +289,25 @@
         <div class="field-value"><span>Firefox / 旧版浏览器</span></div>
       </div>
       <div class="field">
-        <div class="field-label">版本号 / 日期 / 大小</div>
+        <div class="field-label">离线包版本 / 大小</div>
         <div class="field-value"><span id="meta-npapi">-</span></div>
       </div>
       <div class="field">
-        <div class="link-type">官方 CDN 直链（可直接下载，支持IDM）</div>
+        <div class="link-type offline">完整离线安装包（推荐，支持IDM）</div>
         <div class="field-value">
-          <a href="#" target="_blank" id="link-npapi">-</a>
-          <button class="copy-btn" onclick="copyText('link-npapi', this)">复制</button>
+          <a href="#" target="_blank" id="link-offline-npapi">-</a>
+          <button class="copy-btn" onclick="copyText('link-offline-npapi', this)">复制</button>
         </div>
       </div>
       <div class="field">
-        <div class="link-type">离线包格式链接</div>
+        <div class="link-type online">在线安装器（最新版）</div>
         <div class="field-value">
-          <a href="#" target="_blank" id="link2-npapi">-</a>
-          <button class="copy-btn" onclick="copyText('link2-npapi', this)">复制</button>
+          <a href="#" target="_blank" id="link-online-npapi">-</a>
+          <button class="copy-btn" onclick="copyText('link-online-npapi', this)">复制</button>
         </div>
       </div>
       <a href="#" target="_blank" class="download-btn" id="dl-npapi">
-        立即下载
+        立即下载（离线包）
         <span class="sub" id="dl-size-npapi"></span>
       </a>
     </div>
@@ -313,21 +324,29 @@
 
 <script>
 // 嵌入兜底数据（API获取失败时使用）
+// offlineVersion: 最新可用离线包版本号（已验证可下载）
+// offlineVersionDate: 离线包发布日期
 var EMBEDDED_DATA = {
-  version: "34.0.0.384",
-  versionNum: "3400384",
-  date: "2026-09-08",
-  activex: {
-    size: "19.8MB",
-    downloadURL: "https://www.flash.cn/cdm/hm/webplayer/flashplayerax_install_cn_web.exe"
+  "version": "34.0.0.384",
+  "versionNum": "3400384",
+  "date": "2026-09-08",
+  "offlineVersion": "34.0.0.380",
+  "offlineVersionNum": "3400380",
+  "offlineVersionDate": "2026-06-09",
+  "activex": {
+    "size": "19.8MB",
+    "offlineSize": "21.7MB",
+    "downloadURL": "https://www.flash.cn/cdm/hm/webplayer/flashplayerax_install_cn_web.exe"
   },
-  ppapi: {
-    size: "20.1MB",
-    downloadURL: "https://www.flash.cn/cdm/hm/webplayer/flashplayerpp_install_cn_web.exe"
+  "ppapi": {
+    "size": "20.1MB",
+    "offlineSize": "11.5MB",
+    "downloadURL": "https://www.flash.cn/cdm/hm/webplayer/flashplayerpp_install_cn_web.exe"
   },
-  npapi: {
-    size: "20.3MB",
-    downloadURL: "https://www.flash.cn/cdm/hm/webplayer/flashplayer_install_cn_web.exe"
+  "npapi": {
+    "size": "20.3MB",
+    "offlineSize": "11.4MB",
+    "downloadURL": "https://www.flash.cn/cdm/hm/webplayer/flashplayer_install_cn_web.exe"
   }
 };
 
@@ -337,7 +356,7 @@ function versionToNum(ver) {
   return ver.replace(/\./g, '');
 }
 
-// 生成离线包格式链接（用户要求的格式）
+// 生成离线包格式链接
 function buildOfflineLink(type, versionNum) {
   var filenames = {
     'activex': 'install_flash_player_ax_cn.exe',
@@ -379,34 +398,41 @@ function showToast(msg) {
   setTimeout(function() { t.classList.remove('show'); }, 2000);
 }
 
+function formatSize(bytes) {
+  if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + 'MB';
+  if (bytes >= 1024) return (bytes / 1024).toFixed(1) + 'KB';
+  return bytes + 'B';
+}
+
 function updateCard(type, data) {
-  var versionNum = data.versionNum || versionToNum(data.version);
-  var realLink = (data[type] && data[type].downloadURL) ? data[type].downloadURL : '#';
-  var offlineLink = buildOfflineLink(type, versionNum);
-  var size = (data[type] && data[type].size) ? data[type].size : '-';
+  var offlineVersionNum = data.offlineVersionNum || versionToNum(data.offlineVersion);
+  var offlineLink = buildOfflineLink(type, offlineVersionNum);
+  var onlineLink = (data[type] && data[type].downloadURL) ? data[type].downloadURL : '#';
+  var offlineSize = (data[type] && data[type].offlineSize) ? data[type].offlineSize : '-';
 
-  // 版本/日期/大小
+  // 离线包版本/大小
   document.getElementById('meta-' + type).textContent =
-    'v' + (data.version || '-') + ' / ' + (data.date || '-') + ' / ' + size;
+    'v' + (data.offlineVersion || '-') + ' / ' + offlineSize;
 
-  // 官方CDN直链
-  var linkEl = document.getElementById('link-' + type);
-  linkEl.href = realLink;
-  linkEl.textContent = realLink;
+  // 离线包链接
+  var offlineLinkEl = document.getElementById('link-offline-' + type);
+  offlineLinkEl.href = offlineLink;
+  offlineLinkEl.textContent = offlineLink;
 
-  // 离线包格式链接
-  var link2El = document.getElementById('link2-' + type);
-  link2El.href = offlineLink;
-  link2El.textContent = offlineLink;
+  // 在线安装器链接
+  var onlineLinkEl = document.getElementById('link-online-' + type);
+  onlineLinkEl.href = onlineLink;
+  onlineLinkEl.textContent = onlineLink;
 
-  // 立即下载按钮（使用官方CDN直链，支持IDM）
+  // 立即下载按钮（使用离线包直链）
   var dlEl = document.getElementById('dl-' + type);
-  dlEl.href = realLink;
-  document.getElementById('dl-size-' + type).textContent = '约 ' + size + ' · 官方直链';
+  dlEl.href = offlineLink;
+  document.getElementById('dl-size-' + type).textContent =
+    '约 ' + offlineSize + ' · 完整离线包 · 官方直链';
 
   // 徽章
   var badge = document.getElementById('badge-' + type);
-  badge.textContent = '最新版';
+  badge.textContent = '离线包可用';
   badge.className = 'badge';
 }
 
@@ -416,7 +442,9 @@ function renderData(data) {
     updateCard(types[i], data);
   }
   document.getElementById('versionInfo').textContent =
-    '当前最新版本：v' + data.version + ' （' + data.date + '）';
+    '在线安装器最新版本：v' + data.version + ' （' + data.date + '）';
+  document.getElementById('offlineVersionInfo').textContent =
+    '完整离线包最新版本：v' + data.offlineVersion + ' （' + data.offlineVersionDate + '）';
 }
 
 // JSONP 回调函数（API返回 _flash_install_packages_({...}) 格式）
@@ -424,32 +452,39 @@ window._flash_install_packages_ = function(apiData) {
   if (apiData && apiData.activex && apiData.activex.version) {
     var version = apiData.activex.version;
     var versionNum = versionToNum(version);
+    // 在线安装器数据来自API，离线包数据保持嵌入的已验证版本
     var data = {
       version: version,
       versionNum: versionNum,
       date: apiData.activex.date || '-',
+      offlineVersion: EMBEDDED_DATA.offlineVersion,
+      offlineVersionNum: EMBEDDED_DATA.offlineVersionNum,
+      offlineVersionDate: EMBEDDED_DATA.offlineVersionDate,
       activex: {
         size: apiData.activex.size || '-',
+        offlineSize: EMBEDDED_DATA.activex.offlineSize,
         downloadURL: apiData.activex.downloadURL || ''
       },
       ppapi: {
         size: apiData.ppapi ? apiData.ppapi.size : '-',
+        offlineSize: EMBEDDED_DATA.ppapi.offlineSize,
         downloadURL: apiData.ppapi ? apiData.ppapi.downloadURL : ''
       },
       npapi: {
         size: apiData.npapi ? apiData.npapi.size : '-',
+        offlineSize: EMBEDDED_DATA.npapi.offlineSize,
         downloadURL: apiData.npapi ? apiData.npapi.downloadURL : ''
       }
     };
     renderData(data);
-    console.log('Flash Player 版本已更新:', version);
+    console.log('Flash Player 在线版已更新:', version, '离线包版本:', data.offlineVersion);
   }
 };
 
 // 先用嵌入数据渲染
 renderData(EMBEDDED_DATA);
 
-// 然后通过 JSONP 方式获取最新数据（避免HTTP/HTTPS混合内容问题）
+// 然后通过 JSONP 方式获取最新在线版数据
 function fetchLatest() {
   var script = document.createElement('script');
   script.src = 'http://api.flash.cn/config/flashVersion/?t=' + Date.now();

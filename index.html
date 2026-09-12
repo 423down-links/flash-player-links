@@ -33,7 +33,7 @@
     text-align: center;
     color: #4ecca3;
     font-size: 0.9em;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     font-family: 'Consolas', 'Monaco', monospace;
   }
   .cards {
@@ -74,9 +74,9 @@
     color: #4ecca3;
   }
   .badge.loading { background: #533483; color: #ffd369; }
-  .field { margin-bottom: 12px; }
+  .field { margin-bottom: 10px; }
   .field-label {
-    font-size: 0.75em;
+    font-size: 0.72em;
     color: #888;
     margin-bottom: 4px;
     text-transform: uppercase;
@@ -84,16 +84,16 @@
   }
   .field-value {
     font-family: 'Consolas', 'Monaco', monospace;
-    font-size: 0.78em;
+    font-size: 0.72em;
     background: #0f0f23;
-    padding: 8px 10px;
+    padding: 6px 8px;
     border-radius: 6px;
     word-break: break-all;
     color: #e0e0e0;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
   }
   .field-value a {
     color: #4ecca3;
@@ -106,7 +106,7 @@
     background: none;
     border: 1px solid #0f3460;
     color: #888;
-    padding: 2px 8px;
+    padding: 2px 6px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.85em;
@@ -132,10 +132,17 @@
     border-radius: 8px;
     font-size: 0.9em;
     font-weight: 600;
-    margin-top: 8px;
+    margin-top: 12px;
     transition: opacity 0.2s;
   }
   .download-btn:hover { opacity: 0.9; }
+  .download-btn .sub {
+    display: block;
+    font-size: 0.75em;
+    font-weight: normal;
+    opacity: 0.8;
+    margin-top: 2px;
+  }
   .footer {
     text-align: center;
     margin-top: 24px;
@@ -173,6 +180,11 @@
     line-height: 1.6;
   }
   .note strong { color: #4ecca3; }
+  .link-type {
+    font-size: 0.68em;
+    color: #ffd369;
+    margin-bottom: 2px;
+  }
 </style>
 </head>
 <body>
@@ -183,6 +195,7 @@
 
   <div class="note">
     <strong>说明：</strong>数据实时来自官方 API（api.flash.cn），版本号自动更新。
+    "立即下载"按钮使用官方 CDN 直链，支持 IDM 等下载工具直接下载。
     ActiveX 适用于 IE 浏览器，PPAPI 适用于 Chromium 内核浏览器（360/QQ/Chrome 等），NPAPI 适用于 Firefox 等。
   </div>
 
@@ -198,25 +211,27 @@
         <div class="field-value"><span>IE / 360兼容模式</span></div>
       </div>
       <div class="field">
-        <div class="field-label">版本号</div>
-        <div class="field-value"><span id="ver-activex">-</span></div>
+        <div class="field-label">版本号 / 日期 / 大小</div>
+        <div class="field-value"><span id="meta-activex">-</span></div>
       </div>
       <div class="field">
-        <div class="field-label">发布日期</div>
-        <div class="field-value"><span id="date-activex">-</span></div>
-      </div>
-      <div class="field">
-        <div class="field-label">文件大小</div>
-        <div class="field-value"><span id="size-activex">-</span></div>
-      </div>
-      <div class="field">
-        <div class="field-label">下载链接</div>
+        <div class="link-type">官方 CDN 直链（可直接下载，支持IDM）</div>
         <div class="field-value">
           <a href="#" target="_blank" id="link-activex">-</a>
           <button class="copy-btn" onclick="copyText('link-activex', this)">复制</button>
         </div>
       </div>
-      <a href="#" target="_blank" class="download-btn" id="dl-activex">立即下载</a>
+      <div class="field">
+        <div class="link-type">离线包格式链接</div>
+        <div class="field-value">
+          <a href="#" target="_blank" id="link2-activex">-</a>
+          <button class="copy-btn" onclick="copyText('link2-activex', this)">复制</button>
+        </div>
+      </div>
+      <a href="#" target="_blank" class="download-btn" id="dl-activex">
+        立即下载
+        <span class="sub" id="dl-size-activex"></span>
+      </a>
     </div>
 
     <!-- PPAPI -->
@@ -230,25 +245,27 @@
         <div class="field-value"><span>Chromium 内核 / 360极速</span></div>
       </div>
       <div class="field">
-        <div class="field-label">版本号</div>
-        <div class="field-value"><span id="ver-ppapi">-</span></div>
+        <div class="field-label">版本号 / 日期 / 大小</div>
+        <div class="field-value"><span id="meta-ppapi">-</span></div>
       </div>
       <div class="field">
-        <div class="field-label">发布日期</div>
-        <div class="field-value"><span id="date-ppapi">-</span></div>
-      </div>
-      <div class="field">
-        <div class="field-label">文件大小</div>
-        <div class="field-value"><span id="size-ppapi">-</span></div>
-      </div>
-      <div class="field">
-        <div class="field-label">下载链接</div>
+        <div class="link-type">官方 CDN 直链（可直接下载，支持IDM）</div>
         <div class="field-value">
           <a href="#" target="_blank" id="link-ppapi">-</a>
           <button class="copy-btn" onclick="copyText('link-ppapi', this)">复制</button>
         </div>
       </div>
-      <a href="#" target="_blank" class="download-btn" id="dl-ppapi">立即下载</a>
+      <div class="field">
+        <div class="link-type">离线包格式链接</div>
+        <div class="field-value">
+          <a href="#" target="_blank" id="link2-ppapi">-</a>
+          <button class="copy-btn" onclick="copyText('link2-ppapi', this)">复制</button>
+        </div>
+      </div>
+      <a href="#" target="_blank" class="download-btn" id="dl-ppapi">
+        立即下载
+        <span class="sub" id="dl-size-ppapi"></span>
+      </a>
     </div>
 
     <!-- NPAPI -->
@@ -262,25 +279,27 @@
         <div class="field-value"><span>Firefox / 旧版浏览器</span></div>
       </div>
       <div class="field">
-        <div class="field-label">版本号</div>
-        <div class="field-value"><span id="ver-npapi">-</span></div>
+        <div class="field-label">版本号 / 日期 / 大小</div>
+        <div class="field-value"><span id="meta-npapi">-</span></div>
       </div>
       <div class="field">
-        <div class="field-label">发布日期</div>
-        <div class="field-value"><span id="date-npapi">-</span></div>
-      </div>
-      <div class="field">
-        <div class="field-label">文件大小</div>
-        <div class="field-value"><span id="size-npapi">-</span></div>
-      </div>
-      <div class="field">
-        <div class="field-label">下载链接</div>
+        <div class="link-type">官方 CDN 直链（可直接下载，支持IDM）</div>
         <div class="field-value">
           <a href="#" target="_blank" id="link-npapi">-</a>
           <button class="copy-btn" onclick="copyText('link-npapi', this)">复制</button>
         </div>
       </div>
-      <a href="#" target="_blank" class="download-btn" id="dl-npapi">立即下载</a>
+      <div class="field">
+        <div class="link-type">离线包格式链接</div>
+        <div class="field-value">
+          <a href="#" target="_blank" id="link2-npapi">-</a>
+          <button class="copy-btn" onclick="copyText('link2-npapi', this)">复制</button>
+        </div>
+      </div>
+      <a href="#" target="_blank" class="download-btn" id="dl-npapi">
+        立即下载
+        <span class="sub" id="dl-size-npapi"></span>
+      </a>
     </div>
   </div>
 
@@ -299,9 +318,18 @@ var EMBEDDED_DATA = {
   version: "34.0.0.384",
   versionNum: "3400384",
   date: "2026-09-08",
-  activex: { size: "19.8MB" },
-  ppapi: { size: "20.1MB" },
-  npapi: { size: "20.3MB" }
+  activex: {
+    size: "19.8MB",
+    downloadURL: "https://www.flash.cn/cdm/hm/webplayer/flashplayerax_install_cn_web.exe"
+  },
+  ppapi: {
+    size: "20.1MB",
+    downloadURL: "https://www.flash.cn/cdm/hm/webplayer/flashplayerpp_install_cn_web.exe"
+  },
+  npapi: {
+    size: "20.3MB",
+    downloadURL: "https://www.flash.cn/cdm/hm/webplayer/flashplayer_install_cn_web.exe"
+  }
 };
 
 // 版本号转无点格式: 34.0.0.384 -> 3400384
@@ -310,8 +338,8 @@ function versionToNum(ver) {
   return ver.replace(/\./g, '');
 }
 
-// 生成下载链接
-function buildDownloadLink(type, versionNum) {
+// 生成离线包格式链接（用户要求的格式）
+function buildOfflineLink(type, versionNum) {
   var filenames = {
     'activex': 'install_flash_player_ax_cn.exe',
     'ppapi': 'install_flash_player_ppapi_cn.exe',
@@ -354,19 +382,30 @@ function showToast(msg) {
 
 function updateCard(type, data) {
   var versionNum = data.versionNum || versionToNum(data.version);
-  var link = buildDownloadLink(type, versionNum);
+  var realLink = (data[type] && data[type].downloadURL) ? data[type].downloadURL : '#';
+  var offlineLink = buildOfflineLink(type, versionNum);
+  var size = (data[type] && data[type].size) ? data[type].size : '-';
 
-  document.getElementById('ver-' + type).textContent = data.version || '-';
-  document.getElementById('date-' + type).textContent = data.date || '-';
-  document.getElementById('size-' + type).textContent = (data[type] && data[type].size) ? data[type].size : '-';
+  // 版本/日期/大小
+  document.getElementById('meta-' + type).textContent =
+    'v' + (data.version || '-') + ' / ' + (data.date || '-') + ' / ' + size;
 
+  // 官方CDN直链
   var linkEl = document.getElementById('link-' + type);
-  linkEl.href = link;
-  linkEl.textContent = link;
+  linkEl.href = realLink;
+  linkEl.textContent = realLink;
 
+  // 离线包格式链接
+  var link2El = document.getElementById('link2-' + type);
+  link2El.href = offlineLink;
+  link2El.textContent = offlineLink;
+
+  // 立即下载按钮（使用官方CDN直链，支持IDM）
   var dlEl = document.getElementById('dl-' + type);
-  dlEl.href = link;
+  dlEl.href = realLink;
+  document.getElementById('dl-size-' + type).textContent = '约 ' + size + ' · 官方直链';
 
+  // 徽章
   var badge = document.getElementById('badge-' + type);
   badge.textContent = '最新版';
   badge.className = 'badge';
@@ -390,9 +429,18 @@ window._flash_install_packages_ = function(apiData) {
       version: version,
       versionNum: versionNum,
       date: apiData.activex.date || '-',
-      activex: { size: apiData.activex.size || '-' },
-      ppapi: { size: apiData.ppapi ? apiData.ppapi.size : '-' },
-      npapi: { size: apiData.npapi ? apiData.npapi.size : '-' }
+      activex: {
+        size: apiData.activex.size || '-',
+        downloadURL: apiData.activex.downloadURL || ''
+      },
+      ppapi: {
+        size: apiData.ppapi ? apiData.ppapi.size : '-',
+        downloadURL: apiData.ppapi ? apiData.ppapi.downloadURL : ''
+      },
+      npapi: {
+        size: apiData.npapi ? apiData.npapi.size : '-',
+        downloadURL: apiData.npapi ? apiData.npapi.downloadURL : ''
+      }
     };
     renderData(data);
     console.log('Flash Player 版本已更新:', version);
@@ -408,10 +456,10 @@ function fetchLatest() {
   script.src = 'http://api.flash.cn/config/flashVersion/?t=' + Date.now();
   script.onerror = function() {
     console.log('API获取失败，使用嵌入数据');
-    document.body.removeChild(script);
+    if (script.parentNode) document.body.removeChild(script);
   };
   script.onload = function() {
-    document.body.removeChild(script);
+    if (script.parentNode) document.body.removeChild(script);
   };
   document.body.appendChild(script);
 }

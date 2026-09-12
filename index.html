@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adobe Flash Player 离线安装包下载</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+    background: #1a1a2e;
+    color: #e0e0e0;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 1.6em;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #e94560, #0f3460);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle {
+    text-align: center;
+    color: #888;
+    font-size: 0.85em;
+    margin-bottom: 8px;
+  }
+  .version-info {
+    text-align: center;
+    color: #4ecca3;
+    font-size: 0.9em;
+    margin-bottom: 24px;
+    font-family: 'Consolas', 'Monaco', monospace;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+  .card {
+    background: #16213e;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #0f3460;
+    transition: border-color 0.3s;
+  }
+  .card:hover { border-color: #e94560; }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 1.15em;
+    font-weight: 600;
+    color: #fff;
+  }
+  .badge {
+    font-size: 0.7em;
+    padding: 3px 8px;
+    border-radius: 10px;
+    background: #0f3460;
+    color: #4ecca3;
+  }
+  .badge.loading { background: #533483; color: #ffd369; }
+  .field { margin-bottom: 12px; }
+  .field-label {
+    font-size: 0.75em;
+    color: #888;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .field-value {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.78em;
+    background: #0f0f23;
+    padding: 8px 10px;
+    border-radius: 6px;
+    word-break: break-all;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .field-value a {
+    color: #4ecca3;
+    text-decoration: none;
+    flex: 1;
+  }
+  .field-value a:hover { text-decoration: underline; }
+  .field-value span { flex: 1; }
+  .copy-btn {
+    background: none;
+    border: 1px solid #0f3460;
+    color: #888;
+    padding: 2px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover {
+    border-color: #e94560;
+    color: #e94560;
+  }
+  .copy-btn.copied {
+    border-color: #4ecca3;
+    color: #4ecca3;
+  }
+  .download-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: linear-gradient(135deg, #e94560, #0f3460);
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    margin-top: 8px;
+    transition: opacity 0.2s;
+  }
+  .download-btn:hover { opacity: 0.9; }
+  .footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.75em;
+    color: #555;
+    line-height: 1.8;
+  }
+  .footer a {
+    color: #4ecca3;
+    text-decoration: none;
+  }
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0f3460;
+    color: #4ecca3;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+  .note {
+    background: #0f3460;
+    border-left: 3px solid #4ecca3;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+    font-size: 0.82em;
+    color: #aaa;
+    line-height: 1.6;
+  }
+  .note strong { color: #4ecca3; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Adobe Flash Player 离线安装包</h1>
+  <p class="subtitle">国内特供版 · ActiveX / PPAPI / NPAPI 全版本下载</p>
+  <p class="version-info" id="versionInfo">正在获取最新版本...</p>
+
+  <div class="note">
+    <strong>说明：</strong>数据实时来自官方 API（api.flash.cn），版本号自动更新。
+    ActiveX 适用于 IE 浏览器，PPAPI 适用于 Chromium 内核浏览器（360/QQ/Chrome 等），NPAPI 适用于 Firefox 等。
+  </div>
+
+  <div class="cards">
+    <!-- ActiveX -->
+    <div class="card" id="card-activex">
+      <div class="card-header">
+        <span class="card-title">ActiveX 版</span>
+        <span class="badge loading" id="badge-activex">加载中</span>
+      </div>
+      <div class="field">
+        <div class="field-label">适用浏览器</div>
+        <div class="field-value"><span>IE / 360兼容模式</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">版本号</div>
+        <div class="field-value"><span id="ver-activex">-</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">发布日期</div>
+        <div class="field-value"><span id="date-activex">-</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">文件大小</div>
+        <div class="field-value"><span id="size-activex">-</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">下载链接</div>
+        <div class="field-value">
+          <a href="#" target="_blank" id="link-activex">-</a>
+          <button class="copy-btn" onclick="copyText('link-activex', this)">复制</button>
+        </div>
+      </div>
+      <a href="#" target="_blank" class="download-btn" id="dl-activex">立即下载</a>
+    </div>
+
+    <!-- PPAPI -->
+    <div class="card" id="card-ppapi">
+      <div class="card-header">
+        <span class="card-title">PPAPI 版</span>
+        <span class="badge loading" id="badge-ppapi">加载中</span>
+      </div>
+      <div class="field">
+        <div class="field-label">适用浏览器</div>
+        <div class="field-value"><span>Chromium 内核 / 360极速</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">版本号</div>
+        <div class="field-value"><span id="ver-ppapi">-</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">发布日期</div>
+        <div class="field-value"><span id="date-ppapi">-</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">文件大小</div>
+        <div class="field-value"><span id="size-ppapi">-</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">下载链接</div>
+        <div class="field-value">
+          <a href="#" target="_blank" id="link-ppapi">-</a>
+          <button class="copy-btn" onclick="copyText('link-ppapi', this)">复制</button>
+        </div>
+      </div>
+      <a href="#" target="_blank" class="download-btn" id="dl-ppapi">立即下载</a>
+    </div>
+
+    <!-- NPAPI -->
+    <div class="card" id="card-npapi">
+      <div class="card-header">
+        <span class="card-title">NPAPI 版</span>
+        <span class="badge loading" id="badge-npapi">加载中</span>
+      </div>
+      <div class="field">
+        <div class="field-label">适用浏览器</div>
+        <div class="field-value"><span>Firefox / 旧版浏览器</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">版本号</div>
+        <div class="field-value"><span id="ver-npapi">-</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">发布日期</div>
+        <div class="field-value"><span id="date-npapi">-</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">文件大小</div>
+        <div class="field-value"><span id="size-npapi">-</span></div>
+      </div>
+      <div class="field">
+        <div class="field-label">下载链接</div>
+        <div class="field-value">
+          <a href="#" target="_blank" id="link-npapi">-</a>
+          <button class="copy-btn" onclick="copyText('link-npapi', this)">复制</button>
+        </div>
+      </div>
+      <a href="#" target="_blank" class="download-btn" id="dl-npapi">立即下载</a>
+    </div>
+  </div>
+
+  <p class="footer" id="footer">
+    数据来源：<a href="http://api.flash.cn/config/flashVersion/" target="_blank">api.flash.cn</a> |
+    页面自动更新版本号<br>
+    <a href="https://www.423down.com" target="_blank">423down.com</a>
+  </p>
+</div>
+
+<div class="toast" id="toast">已复制到剪贴板</div>
+
+<script>
+// 嵌入兜底数据（API获取失败时使用）
+var EMBEDDED_DATA = {
+  version: "34.0.0.384",
+  versionNum: "3400384",
+  date: "2026-09-08",
+  activex: { size: "19.8MB" },
+  ppapi: { size: "20.1MB" },
+  npapi: { size: "20.3MB" }
+};
+
+// 版本号转无点格式: 34.0.0.384 -> 3400384
+function versionToNum(ver) {
+  if (!ver) return '';
+  return ver.replace(/\./g, '');
+}
+
+// 生成下载链接
+function buildDownloadLink(type, versionNum) {
+  var filenames = {
+    'activex': 'install_flash_player_ax_cn.exe',
+    'ppapi': 'install_flash_player_ppapi_cn.exe',
+    'npapi': 'install_flash_player_cn.exe'
+  };
+  return 'https://www.flash.cn/flashplayer/' + versionNum + '/' + filenames[type];
+}
+
+function copyText(id, btn) {
+  var el = document.getElementById(id);
+  var text = el.tagName === 'A' ? el.href : el.textContent;
+  if (!text || text === '-' || text === '加载中...') return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      if (btn) { btn.classList.add('copied'); setTimeout(function(){ btn.classList.remove('copied'); }, 1500); }
+      showToast('已复制到剪贴板');
+    }).catch(function() { fallbackCopy(text, btn); });
+  } else {
+    fallbackCopy(text, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  if (btn) { btn.classList.add('copied'); setTimeout(function(){ btn.classList.remove('copied'); }, 1500); }
+  showToast('已复制到剪贴板');
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2000);
+}
+
+function updateCard(type, data) {
+  var versionNum = data.versionNum || versionToNum(data.version);
+  var link = buildDownloadLink(type, versionNum);
+
+  document.getElementById('ver-' + type).textContent = data.version || '-';
+  document.getElementById('date-' + type).textContent = data.date || '-';
+  document.getElementById('size-' + type).textContent = (data[type] && data[type].size) ? data[type].size : '-';
+
+  var linkEl = document.getElementById('link-' + type);
+  linkEl.href = link;
+  linkEl.textContent = link;
+
+  var dlEl = document.getElementById('dl-' + type);
+  dlEl.href = link;
+
+  var badge = document.getElementById('badge-' + type);
+  badge.textContent = '最新版';
+  badge.className = 'badge';
+}
+
+function renderData(data) {
+  var types = ['activex', 'ppapi', 'npapi'];
+  for (var i = 0; i < types.length; i++) {
+    updateCard(types[i], data);
+  }
+  document.getElementById('versionInfo').textContent =
+    '当前最新版本：v' + data.version + ' （' + data.date + '）';
+}
+
+// JSONP 回调函数（API返回 _flash_install_packages_({...}) 格式）
+window._flash_install_packages_ = function(apiData) {
+  if (apiData && apiData.activex && apiData.activex.version) {
+    var version = apiData.activex.version;
+    var versionNum = versionToNum(version);
+    var data = {
+      version: version,
+      versionNum: versionNum,
+      date: apiData.activex.date || '-',
+      activex: { size: apiData.activex.size || '-' },
+      ppapi: { size: apiData.ppapi ? apiData.ppapi.size : '-' },
+      npapi: { size: apiData.npapi ? apiData.npapi.size : '-' }
+    };
+    renderData(data);
+    console.log('Flash Player 版本已更新:', version);
+  }
+};
+
+// 先用嵌入数据渲染
+renderData(EMBEDDED_DATA);
+
+// 然后通过 JSONP 方式获取最新数据（避免HTTP/HTTPS混合内容问题）
+function fetchLatest() {
+  var script = document.createElement('script');
+  script.src = 'http://api.flash.cn/config/flashVersion/?t=' + Date.now();
+  script.onerror = function() {
+    console.log('API获取失败，使用嵌入数据');
+    document.body.removeChild(script);
+  };
+  script.onload = function() {
+    document.body.removeChild(script);
+  };
+  document.body.appendChild(script);
+}
+
+// 页面加载后获取最新版本
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', fetchLatest);
+} else {
+  fetchLatest();
+}
+</script>
+</body>
+</html>
